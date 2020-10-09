@@ -1,26 +1,47 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import Form from './Component/Form';
+import Recipes from './Component/Recipes';
+import Router from './Component/Router'
+class App extends React.Component {
+constructor(){
+  super();
+  this.state={
+    recipes:[]
+    
+  }
+}
+  getRecipe = async (e)=>{
+    const recipeName=e.target.elements.recipeName.value;
+    e.preventDefault();
+    const api_call= await fetch(`https://forkify-api.herokuapp.com/api/search?q=pizza`)
+    const data = await api_call.json();
+    
+    this.setState({
+      recipes:data.recipes
+    })
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    console.log(this.state.recipes)
+  }
+
+  filterdeRecipe =(eve)=>{
+    const filt=this.state.recipes.filter(rec=>rec.recipe_id===eve.recipe_id)
+    this.setState({filterd:filt})
+    
+  }
+  render(){
+    return (
+      <div className="App">
+        <header className="App-header">
+         <div className='app-title'>Recipe Search</div>
+        </header>
+        <Form getRecipe={this.getRecipe}/>
+       <Recipes recipes={this.state.recipes}/>
+      </div>
+    );
+  }
+  
 }
 
 export default App;
